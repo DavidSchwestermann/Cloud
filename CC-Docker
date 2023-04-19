@@ -1,0 +1,29 @@
+#cloud-config
+users:
+  - name: david
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDFeVsSXaZjR6io9v1z3qLDoiHICLmtFHyfuBr4BY3cIwFRip6PYslvhwWOWMDBnCgH/2NykCFyw0dE+riBC3Lxa1fvQRka+hTz5fh9URRfksUgVsyiD5A2lqGVvCq+gsKif5cxVVo72m1QvEOeI9Fxl8gpbFUslUKBoHAwkSv/SkOIi4eGApUYJg3we3UVHChwtdDgorZSxVUIquXZXFxAKgOHvVu+XZbcU1WUoufYUiKwPp2zxvSAYbgJ/YpCuKYD5g4kBb+fDOBiNzt0Qm0gI2mw+DG3kT4dNWEGc0pOziqc5oiHc7QOV6RfzMo68lD4UMsyMz8ML7GdX6BXgzt4qIv2QUI7Pp1XA+2uMnRlOd74Fv1xR2NcWVHERaurUMyCj/wDjjlisNuvGlfGtglCqQ4+eKXK09Shj1VDB90FHQGTxANnsZc7d+SDsfH+bDs1q5i4I1TyKEmJBVtxl/r95QOTkWnkIAA98Tw/pZ2jZMcIX52fnL9ZWAVwycCI/0s= david@DESKTOP-QBC9UM7 
+
+# Install necessary packages
+packages:
+- curl
+- sudo
+- docker.io
+
+# Run necessary commands
+runcmd:
+- wget https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz
+- tar xvfz node_exporter-*.*-amd64.tar.gz
+- cd node_exporter-*.*-amd64
+- ./node_exporter &
+- curl http://localhost:9100/metrics > log-prometheus.log
+
+# Pull and run necessary Docker containers
+- docker pull prom/prometheus
+- docker pull grafana/grafana
+- wget -O /home/david/prometheus.yml "https://github.com/quipoly/cloudmodul/blob/main/configs/prometheus.yml"
+- docker run -d -p 9090:9090 -v /home/david/prometheus.yml:/etc/prometheus/prometheus.yml --name prometheus-david prom/prometheus
+- docker run -d -p 3000:3000 --name grafana-container grafana/Grafana
