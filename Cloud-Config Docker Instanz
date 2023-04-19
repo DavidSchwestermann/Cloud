@@ -1,0 +1,26 @@
+#cloud-config
+
+users:
+  - name: david
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh_authorized_keys:
+      - ssh-rsa
+AAAAB3NzaC1yc2EAAAADAQABAAABgQDI16adj5v04bhPodvG2uuFrBX8JP3bEPZ7pW4/s/vFrpGq3xHZmt7qrLhwd4IDFxSsCUsZitOTequvm0kMK5CABHado76t3Jlo904WxBHtciHVmCE6KzHJBVw14LGdvEgiOxboHAyL8pRGYPQBYHVx013u/UPmkKJE2xSXUroVlbRWVA9RSChROiu2AOIWi+H3PtxwpC69dGkwpMIlTDy1/btFCS+HBBNaQBsJOH52MiVfLeAAqsO7pNdS5ORjUKt32k5VNAPYxbFGNqvgfYT0o/Hq6oQmc7Ar2Sg/+oIG7hv/c2hFlszsP2Bwp4lg+R2lsWKCWYltSv+gk0sZsp95/eiMqkmg7k3X6TQ/QQRccJk6cyJ8ydZVpr0DRH9A3xwwvWd5LWSNiLhF/Wv821/4PaBoVvbM5ceXIWgUS296qtHX1CYmUIdLRERdtn+zSvpyb2siWS6bzGLS/eade/8zw+a3D/Vo2GU9USN6V76hO5qbnOmQ7RY/i47x4W47Vys= david@LAPTOP-1EM28FLO
+
+service:
+  -docker
+  -curl
+
+runcmd:
+  - apt-get update
+  - apt-get install -y prometheus-node-exporter
+  - curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
+  - systemctl start docker
+  - docker run -d --name prometheus -p 9090:9090 prom/prometheus
+  - docker run -d --name grafana -p 3000:3000 grafana/grafana
+  - mkdir /data  # Erstelle ein Verzeichnis für den Container-Speicher
+  - echo "/dev/xvdb /data ext4 defaults,nofail 0 2" >> /etc/fstab  
+  - mkfs.ext4 /dev/xvdb  # Formatieren des Volumes als ext4-Dateisystem
+  - mount /data  # Mounten des Volumes im Verzeichnis /data
