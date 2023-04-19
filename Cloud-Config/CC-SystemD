@@ -1,0 +1,39 @@
+#cloud-config
+users:
+  - name: david
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDI16adj5v04bhPodvG2uuFrBX8JP3bEPZ7pW4/s/vFrpGq3xHZmt7qrLhwd4IDFxSsCUsZitOTequvm0kMK5CABHado76t3Jlo904WxBHtciHVmCE6KzHJBVw14LGdvEgiOxboHAyL8pRGYPQBYHVx013u/UPmkKJE2xSXUroVlbRWVA9RSChROiu2AOIWi+H3PtxwpC69dGkwpMIlTDy1/btFCS+HBBNaQBsJOH52MiVfLeAAqsO7pNdS5ORjUKt32k5VNAPYxbFGNqvgfYT0o/Hq6oQmc7Ar2Sg/+oIG7hv/c2hFlszsP2Bwp4lg+R2lsWKCWYltSv+gk0sZsp95/eiMqkmg7k3X6TQ/QQRccJk6cyJ8ydZVpr0DRH9A3xwwvWd5LWSNiLhF/Wv821/4PaBoVvbM5ceXIWgUS296qtHX1CYmUIdLRERdtn+zSvpyb2siWS6bzGLS/eade/8zw+a3D/Vo2GU9USN6V76hO5qbnOmQ7RY/i47x4W47Vys= david@LAPTOP-1EM28FLO
+
+packages:
+- curl
+- sudo
+- docker.io
+
+runcmd:
+- cd /home/david
+- sudo useradd -m node_exporter
+- sudo groupadd node_exporter
+- sudo usermod -a -G node_exporter node_exporter
+- cd /tmp && curl -OL – 
+- wget https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz
+- cd /tmp && tar -xvf /tmp/node_exporter-1.2.2.linux-amd64.tar.gz
+- sudo mv /tmp/node_exporter-1.2.2.linux-amd64/node_exporter /usr/local/bin/
+- sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter
+- wget https://github.com/quipoly/cloudmodul/raw/main/configs/node_exporter.service -P /etc/systemd/system/
+- docker pull prom/prometheus
+- docker pull grafana/grafana
+- wget "https://github.com/quipoly/cloudmodul/raw/main/configs/prometheus.yml" -P /home/david
+- mkdidr /etc/david/
+- wget https://raw.githubusercontent.com/quipoly/cloudmodul/main/startup.sh -P /etc/david/
+- sudo chmod +x /etc/david/startup.sh
+- sudo chown david/etc/david/startup.sh
+- sudo chmod 777 /etc/david/startup.sh
+- wget "https://github.com/quipoly/cloudmodul/raw/main/configs/david.service" -P /etc/systemd/system/
+- sudo systemctl daemon-reload
+- sudo systemctl start david
+- sudo systemctl enable david
+- sudo systemctl start node_exporter
+- sudo systemctl enable node_exporter
