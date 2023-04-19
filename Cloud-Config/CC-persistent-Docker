@@ -24,6 +24,6 @@ runcmd:
 # Pull and run necessary Docker containers
 - docker pull prom/prometheus
 - docker pull grafana/grafana
-- wget -O /home/david/prometheus.yml "https://github.com/quipoly/cloudmodul/blob/main/configs/prometheus.yml"
+- wget -O /home/david/prometheus.yml "https://github.com/DavidSchwestermann/Cloud/blob/main/Ansible/prometheus.yml"
 - docker run -d -p 9090:9090 -v /home/david/prometheus.yml:/etc/prometheus/prometheus.yml --name prometheus-david prom/prometheus
 - docker run -d -p 3000:3000 --name grafana-container grafana/Grafana
