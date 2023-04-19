@@ -25,13 +25,13 @@ runcmd:
 - wget https://github.com/quipoly/cloudmodul/raw/main/configs/node_exporter.service -P /etc/systemd/system/
 - docker pull prom/prometheus
 - docker pull grafana/grafana
-- wget "https://github.com/quipoly/cloudmodul/raw/main/configs/prometheus.yml" -P /home/david
+- wget "https://github.com/DavidSchwestermann/Cloud/blob/main/Ansible/prometheus.yml" -P /home/david
 - mkdidr /etc/david/
-- wget https://raw.githubusercontent.com/quipoly/cloudmodul/main/startup.sh -P /etc/david/
+- wget https://github.com/DavidSchwestermann/Cloud/blob/main/startup.sh -P /etc/david/
 - sudo chmod +x /etc/david/startup.sh
 - sudo chown david/etc/david/startup.sh
 - sudo chmod 777 /etc/david/startup.sh
-- wget "https://github.com/quipoly/cloudmodul/raw/main/configs/david.service" -P /etc/systemd/system/
+- wget "https://github.com/DavidSchwestermann/Cloud/blob/main/Configs/david.service" -P /etc/systemd/system/
 - sudo systemctl daemon-reload
 - sudo systemctl start david
 - sudo systemctl enable david
