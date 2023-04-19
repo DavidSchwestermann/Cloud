@@ -1,0 +1,8 @@
+[Unit]
+Description=Startet Grafana und Prometheus von dockern aus
+
+[Service]
+ExecStart=/etc/david/startup.sh
+
+[Install]
+WantedBy=multi-user.target
