@@ -1,0 +1,5 @@
+[monitorserver]
+db_server   ansible_host=192.168.66.236   ansible_user=david  ansible_ssh_private_key_file=/home/erzinger/.ssh/id_rsa
+[nodeservers]
+server1  ansible_host=192.168.66.237  ansible_user=david  ansible_ssh_private_key_file=/home/erzinger/.ssh/id_rsa
+server2  ansible_host=192.168.66.237  ansible_user=david  ansible_ssh_private_key_file=/home/erzinger/.ssh/id_rsa
